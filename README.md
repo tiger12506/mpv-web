@@ -1,10 +1,14 @@
+0. Install Python3 pip
+
+    sudo apt install python3-pip
+
 1. Install Flask
 
-    sudo pip install Flask
+    sudo pip3 install Flask
 
 2. Install python-mpv
 
-    sudo pip install python-mpv
+    sudo pip3 install python-mpv
 
 3. Run debug-mpv, which sets up flask to run app to run on port 5000 in debug mode
 

@@ -1,4 +1,5 @@
 import os
+import sys
 from flask import Flask
 from flask import request
 app = Flask(__name__)
@@ -20,6 +21,10 @@ html = '''
     </body>
 </html>
 '''
+
+@app.route('/version')
+def version():
+    return sys.version
 
 @app.route('/')
 def index():
