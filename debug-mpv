@@ -1,4 +1,7 @@
 export FLASK_APP=mpv.py
 export FLASK_ENV=development
 
+rm /tmp/mpv
+mkfifo /tmp/mpv
+mpv --input-file=/tmp/mpv --idle=yes &
 flask run --host=0.0.0.0

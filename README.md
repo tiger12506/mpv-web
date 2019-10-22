@@ -1,3 +1,5 @@
+GOAL is to provide a web interface to an mpv instance under slave mode, to allow controlling RPi3 with web browser on any device
+
 1. Install Python3 pip
 
     sudo apt install python3-pip
@@ -10,15 +12,18 @@
 
     sudo pip3 install python-mpv
 
-4. Create fifo /tmp/mpv and /tmp/mpv-playlist.m3u
+4. Run debug-mpv, which sets up flask to run app to run on port 5000 in debug mode
 
-    mkfifo /tmp/mpv
-    mkfifo /tmp/mpv-playlist.m3u
+    ./debug-mpv
 
-5. Run mpv in slave mode
+    a. Create fifo /tmp/mpv
 
-    mpv --input-file=/tmp/mpv --idle /tmp/mpv-playlist.m3u
+        mkfifo /tmp/mpv
 
-6. Run debug-mpv, which sets up flask to run app to run on port 5000 in debug mode
+    b. Run mpv in slave mode
 
-GOAL is to provide a web interface to an mpv instance under slave mode, to allow controlling RPi3 with web browser on any device
+        mpv --input-file=/tmp/mpv --idle
+
+
+5. While debug-mpv holds open instance of mpv, make changes and save mpv.py as needed and work with browser granpi:5000/
+

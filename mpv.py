@@ -6,19 +6,36 @@ app = Flask(__name__)
 
 directory = '/home/jacob/tv'
 fifo_name = '/tmp/mpv'
-playlist_fifo_name = '/tmp/mpv-playlist.m3u'
 
 html = '''
 <html>
     <head>
         <title>MPV frontend for RPi</title>
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+               integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+               crossorigin="anonymous">
+        </script>
+
+        <script>
+            $(document).ready(function() {
+                $("#pause").on("click", function (event) {
+                    event.preventDefault();
+                    $.ajax({
+                        url: "/cmd/pause",
+                    });
+                });
+            });
+        </script>
     </head>
 
     <body>
         <h1>This works</h1>
         <ul>
-        {0}
+'''
+html2 = '''
         </ul>
+
+        <button id="pause" type="button">Pause</button>
     </body>
 </html>
 '''
@@ -37,18 +54,14 @@ def index():
         if os.path.isfile(full):
             comb += "<li><a href=\"/add?path="+full+"\">" + p + "</a></li>\n"
 
-    return html.format(comb)
+    return html+comb+html2
 
 @app.route('/add', methods=['GET'])
 def add():
     p = request.args.get('path')
-    try:
-        playlist_fifo = open(playlist_fifo_name, "w")
-        playlist_fifo.write(p+'\n')
-        playlist_fifo.close()
-        return 'OK' + index()
-    except:
-        return 'FAIL' + index()
+    full = os.path.join(directory, p)
+    result = send('loadfile {} append-play'.format(full))
+    return result + index()
 
 cmd_map = { 'pause'     : 'cycle pause', \
             'mute'      : 'cycle mute', \
@@ -64,7 +77,8 @@ cmd_map = { 'pause'     : 'cycle pause', \
             'loop'      : 'cycle-values loop-file "inf" "no"', \
             'framenext' : 'frame-step', \
             'frameprev' : 'frame-back-step', \
-            'show'      : 'show_text ${playlist}' \
+            'show'      : 'show_text ${playlist}', \
+            'clear'     : 'playlist-clear' \
 }
 
 @app.route('/cmd/<command>')
