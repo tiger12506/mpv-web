@@ -1,0 +1,60 @@
+<html>
+    <head>
+        <title>MPV frontend for RPi</title>
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+               integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+               crossorigin="anonymous">
+        </script>
+
+        <script>
+            $(document).ready(function() {
+                $("#pause").on("click", function (event) {
+                    event.preventDefault();
+                    $.ajax({
+                        url: "/cmd/pause",
+                    });
+                });
+                $("#show").on("click", function (event) {
+                    event.preventDefault();
+                    $.ajax({
+                        url: "/cmd/show",
+                    });
+                });
+                $("#next").on("click", function (event) {
+                    event.preventDefault();
+                    $.ajax({
+                        url: "/cmd/next",
+                    });
+                });
+                $("#prev").on("click", function (event) {
+                    event.preventDefault();
+                    $.ajax({
+                        url: "/cmd/prev",
+                    });
+                });
+                $("#clear").on("click", function (event) {
+                    event.preventDefault();
+                    $.ajax({
+                        url: "/cmd/clear",
+                    });
+                });
+            });
+        </script>
+    </head>
+
+    <body>
+        <h1>This works</h1>
+
+        <ul>
+# for (base,full) in dirlist:
+        <li><a href="/add?path={{ full }}">{{ base }}</a></li>
+# endfor
+        </ul>
+
+        <button id="pause" type="button">Pause</button>
+        <button id="show" type="button">show</button>
+        <button id="next" type="button">next</button>
+        <button id="prev" type="button">prev</button>
+        <button id="clear" type="button">clear</button>
+    </body>
+</html>

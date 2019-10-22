@@ -2,43 +2,22 @@ import os
 import sys
 from flask import Flask
 from flask import request
-app = Flask(__name__)
+from jinja2 import Environment, PackageLoader, select_autoescape
+
 
 directory = '/home/jacob/tv'
 fifo_name = '/tmp/mpv'
 
-html = '''
-<html>
-    <head>
-        <title>MPV frontend for RPi</title>
-        <script src="https://code.jquery.com/jquery-3.4.1.min.js"
-               integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-               crossorigin="anonymous">
-        </script>
 
-        <script>
-            $(document).ready(function() {
-                $("#pause").on("click", function (event) {
-                    event.preventDefault();
-                    $.ajax({
-                        url: "/cmd/pause",
-                    });
-                });
-            });
-        </script>
-    </head>
+env = Environment(
+        loader=PackageLoader('mpv', 'templates'),
+        autoescape=select_autoescape(['html', 'xml']),
+        line_statement_prefix='#'
 
-    <body>
-        <h1>This works</h1>
-        <ul>
-'''
-html2 = '''
-        </ul>
+)
+template = env.get_template('index.html')
 
-        <button id="pause" type="button">Pause</button>
-    </body>
-</html>
-'''
+app = Flask(__name__)
 
 @app.route('/version')
 def version():
@@ -46,15 +25,15 @@ def version():
 
 @app.route('/')
 def index():
-    comb = ''
+    lis = []
     for p in os.listdir(directory):
         full = os.path.join(directory, p)
         if os.path.isdir(full):
             continue
         if os.path.isfile(full):
-            comb += "<li><a href=\"/add?path="+full+"\">" + p + "</a></li>\n"
+            lis.append((p, full))
 
-    return html+comb+html2
+    return template.render(dirlist=lis)
 
 @app.route('/add', methods=['GET'])
 def add():
