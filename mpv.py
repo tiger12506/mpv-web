@@ -6,6 +6,7 @@ app = Flask(__name__)
 
 directory = '/home/jacob/tv'
 fifo_name = '/tmp/mpv'
+playlist_fifo_name = '/tmp/mpv-playlist.m3u'
 
 html = '''
 <html>
@@ -34,14 +35,20 @@ def index():
         if os.path.isdir(full):
             continue
         if os.path.isfile(full):
-            comb += "<li><a href=\"/add?path="+p+"\">" + p + "</a></li>\n"
+            comb += "<li><a href=\"/add?path="+full+"\">" + p + "</a></li>\n"
 
     return html.format(comb)
 
 @app.route('/add', methods=['GET'])
 def add():
     p = request.args.get('path')
-    return 'commanded to play with path: {}'.format(p)
+    try:
+        playlist_fifo = open(playlist_fifo_name, "w")
+        playlist_fifo.write(p+'\n')
+        playlist_fifo.close()
+        return 'OK' + index()
+    except:
+        return 'FAIL' + index()
 
 cmd_map = { 'pause'     : 'cycle pause', \
             'mute'      : 'cycle mute', \
@@ -56,7 +63,8 @@ cmd_map = { 'pause'     : 'cycle pause', \
             'audio'     : 'cycle audio', \
             'loop'      : 'cycle-values loop-file "inf" "no"', \
             'framenext' : 'frame-step', \
-            'frameprev' : 'frame-back-step'
+            'frameprev' : 'frame-back-step', \
+            'show'      : 'show_text ${playlist}' \
 }
 
 @app.route('/cmd/<command>')
@@ -67,10 +75,10 @@ def cmd(command):
 
 def send(command):
     try:
-        f.write(command+'\n')
-        f.flush()
+        cmd_fifo = open(fifo_name, "w")
+        cmd_fifo.write(command+'\n')
+        cmd_fifo.close()
         return 'OK'
     except:
         return 'FAIL'
 
-f = open(fifo_name, "w")
