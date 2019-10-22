@@ -44,7 +44,7 @@ def add():
     return 'commanded to play with path: {}'.format(p)
 
 cmd_map = { 'pause'     : 'cycle pause', \
-            'mute'      : 'mute', \
+            'mute'      : 'cycle mute', \
             'next'      : 'playlist-next', \
             'prev'      : 'playlist-prev', \
             'volup'     : 'add volume 2', \
@@ -73,4 +73,4 @@ def send(command):
     except:
         return 'FAIL'
 
-f = open(fifo_name, "w+")
+f = open(fifo_name, "w")
