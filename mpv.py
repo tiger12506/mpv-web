@@ -1,82 +1,71 @@
-#!/usr/bin/env python
-from flask import Flask, escape, request
 import os
-
-fifo_name = '/tmp/mpv'
-
-map = ["pause", "next", "prev", "volup", "voldn", "mute", "seekup", "seekdn", "subtitles", "quit", "framenext", "frameprev", "audio", "loop"]
-
+from flask import Flask
+from flask import request
 app = Flask(__name__)
 
+directory = '/home/jacob/tv'
+fifo_name = '/tmp/mpv'
+
+html = '''
+<html>
+    <head>
+        <title>MPV frontend for RPi</title>
+    </head>
+
+    <body>
+        <h1>This works</h1>
+        <ul>
+        {0}
+        </ul>
+    </body>
+</html>
+'''
+
 @app.route('/')
-def help():
-    return "<ul>" + "\n".join("<li><a href=\"/"+x+"\">" + x + "</a></li>" for x in map) + "</ul>"
+def index():
+    comb = ''
+    for p in os.listdir(directory):
+        full = os.path.join(directory, p)
+        if os.path.isdir(full):
+            continue
+        if os.path.isfile(full):
+            comb += "<li><a href=\"/add?path="+p+"\">" + p + "</a></li>\n"
 
-@app.route('/pause')
-def pause():
-    return send("cycle pause")
+    return html.format(comb)
 
-@app.route('/next')
-def next():
-    return send("playlist-next")
+@app.route('/add', methods=['GET'])
+def add():
+    p = request.args.get('path')
+    return 'commanded to play with path: {}'.format(p)
 
-@app.route('/prev')
-def prev():
-    return send("playlist-prev")
+cmd_map = { 'pause'     : 'cycle pause', \
+            'mute'      : 'mute', \
+            'next'      : 'playlist-next', \
+            'prev'      : 'playlist-prev', \
+            'volup'     : 'add volume 2', \
+            'voldn'     : 'add volume -2', \
+            'seekup'    : 'seek 5', \
+            'seekdn'    : 'seek -5', \
+            'subtitles' : 'cycle sub-visibility', \
+            'quit'      : 'quit', \
+            'audio'     : 'cycle audio', \
+            'loop'      : 'cycle-values loop-file "inf" "no"', \
+            'framenext' : 'frame-step', \
+            'frameprev' : 'frame-back-step'
+}
 
-@app.route('/volup')
-def volume_up():
-    return send("add volume 2")
-
-@app.route('/voldn')
-def volume_down():
-    return send("add volume -2")
-
-@app.route('/mute')
-def mute():
-    return send("mute")
-
-@app.route('/seekup')
-def seek_up():
-    return send("seek 5")
-
-@app.route('/seekdn')
-def seek_down():
-    return send("seek -5")
-
-@app.route('/subtitles')
-def subtitles():
-    return send("cycle sub-visibility")
-
-@app.route('/quit')
-def quit():
-    return send("quit")
-
-@app.route('/framenext')
-def frame_next():
-    return send("frame-step")
-
-@app.route('/frameprev')
-def frame_prev():
-    return send("frame-back-step")
-
-@app.route('/audio')
-def audio_next():
-    return send("cycle audio")
-
-@app.route('/loop')
-def loop():
-    return send("cycle-values loop-file \"inf\" \"no\"")
+@app.route('/cmd/<command>')
+def cmd(command):
+    if (command in cmd_map):
+        return send(cmd_map[command])
+    return 'FAIL: command={}'.format(command)
 
 def send(command):
     try:
-        f.write(command+"\n")
+        f.write(command+'\n')
         f.flush()
-        return "OK<hr>" + help() + '<hr><input type="text" name="url"><input type="submit" value="Submit">'
+        return 'OK'
     except:
-        return "FAIL<hr>" + help()
-
+        return 'FAIL'
 
 f = open(fifo_name, "w+")
-
-app.run(host='0.0.0.0', port=1250, debug=True)
