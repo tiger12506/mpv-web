@@ -38,8 +38,7 @@ def index():
 @app.route('/add', methods=['GET'])
 def add():
     p = request.args.get('path')
-    full = os.path.join(directory, p)
-    result = send('loadfile {} append-play'.format(full))
+    result = send('loadfile {} append-play'.format(p))
     return result + index()
 
 cmd_map = { 'pause'     : 'cycle pause', \
