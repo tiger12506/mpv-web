@@ -8,10 +8,6 @@ GOAL is to provide a web interface to an mpv instance under slave mode, to allow
 
     sudo pip3 install Flask
 
-3. Install python-mpv
-
-    sudo pip3 install python-mpv
-
 4. Run debug-mpv, which sets up flask to run app to run on port 5000 in debug mode
 
     ./debug-mpv
