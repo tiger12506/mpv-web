@@ -13,65 +13,42 @@
         <!-- Bootstrap CSS -->
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
+        <!-- Open Iconic SVG Icon Set -->
+        <link href="/static/open-iconic/font/css/open-iconic-bootstrap.css" rel="stylesheet">
+
         <script>
             $(document).ready(function() {
-                $("#pause").on("click", function (event) {
-                    event.preventDefault();
-                    $.ajax({
-                        url: "/cmd/pause",
-                    });
-                });
-                $("#show").on("click", function (event) {
-                    event.preventDefault();
-                    $.ajax({
-                        url: "/cmd/show",
-                    });
-                });
-                $("#next").on("click", function (event) {
-                    event.preventDefault();
-                    $.ajax({
-                        url: "/cmd/next",
-                    });
-                });
-                $("#prev").on("click", function (event) {
-                    event.preventDefault();
-                    $.ajax({
-                        url: "/cmd/prev",
-                    });
-                });
-                $("#clear").on("click", function (event) {
-                    event.preventDefault();
-                    $.ajax({
-                        url: "/cmd/clear",
-                    });
-                });
                 $("#ytd").on("click", function (event) {
                     event.preventDefault();
                     $.ajax({
                         url: "/add?path=" + $("#yt-url").val(),
-                        sucess: function() {
+                        success: function() {
                             $("#yt-url").val("");
                         }
                     });
                 });
             });
+
+            function cmdClick(id) {
+                $.ajax({
+                    url: "/cmd/" + id,
+                });
+            }
+
+            function addClick(path) {
+                $.ajax({
+                    url: "/add?path=" + path,
+                });
+            }
         </script>
     </head>
 
     <body>
-        <h1>This works</h1>
-
-        <ul>
-# for (base,full) in dirlist:
-        <li><a href="/add?path={{ full }}">{{ base }}</a></li>
-# endfor
-        </ul>
-
-        <button id="pause" type="button">Pause</button>
-        <button id="show" type="button">show</button>
-        <button id="next" type="button">next</button>
-        <button id="prev" type="button">prev</button>
-        <button id="clear" type="button">clear</button>
+        <button id="pause" type="button" class="oi oi-media-pause" onclick="cmdClick('pause')"></button>
+        <button id="prev"  type="button" class="oi oi-media-step-backward" onclick="cmdClick('prev')"></button>
+        <button id="next"  type="button" class="oi oi-media-step-forward" onclick="cmdClick('next')"></button>
+        <button id="show"  type="button" class="oi oi-info" onclick="cmdClick('show')"></button>
+        <button id="clear" type="button" class="oi oi-ban" onclick="cmdClick('clear')"></button>
 
         <br>
 
@@ -81,6 +58,24 @@
                 <button id="ytd" type="button" class ="btn btn-outline-secondary">Youtube</button>
             </div>
         </div>
+
+        <ul class="list-group">
+# for (cnt, base,full) in dirs:
+        <button class="list-group-item list-group-item-action list-group-item-primary" type="button" data-toggle="collapse", data-target="#dir{{ cnt }}">
+            <span class="oi oi-chevron-bottom"></span>{{ base }}
+        </button>
+        <div class="collapse" id="dir{{ cnt }}">
+            <div class="card card-body">
+                Contents of {{ full }}
+            </div>
+        </div>
+# endfor
+# for (cnt, base,full) in files:
+        <div class="list-group-item">
+            <button type="button" class="oi oi-media-play" onclick="addClick('{{ full }}')"></button>{{ base }}
+        </div>
+# endfor
+        </ul>
 
         <!-- Bootstrap CDN & dependency -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>

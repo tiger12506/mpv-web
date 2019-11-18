@@ -1,7 +1,7 @@
 import os
 import sys
 from flask import Flask
-from flask import request
+from flask import request, redirect, url_for
 from jinja2 import Environment, PackageLoader, select_autoescape
 
 
@@ -26,14 +26,19 @@ def version():
 @app.route('/')
 def index():
     lis = []
+    licnt = 0
+    dirs = []
+    dircnt = 0
     for p in os.listdir(directory):
         full = os.path.join(directory, p)
         if os.path.isdir(full):
-            continue
+            dirs.append((dircnt, p, full))
+            dircnt += 1
         if os.path.isfile(full):
-            lis.append((p, full))
+            lis.append((licnt, p, full))
+            licnt += 1
 
-    return template.render(dirlist=lis)
+    return template.render(dirs=dirs, files=lis)
 
 @app.route('/add', methods=['GET'])
 def add():
@@ -58,6 +63,10 @@ cmd_map = { 'pause'     : 'cycle pause', \
             'show'      : 'show_text ${playlist}', \
             'clear'     : 'playlist-clear' \
 }
+
+@app.route('/favicon.ico')
+def icon():
+    return redirect(url_for('static', filename='open-iconic/svg/audio-spectrum.svg'))
 
 @app.route('/cmd/<command>')
 def cmd(command):
