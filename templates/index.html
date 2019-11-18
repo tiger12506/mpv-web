@@ -20,25 +20,18 @@
             $(document).ready(function() {
                 $("#ytd").on("click", function (event) {
                     event.preventDefault();
-                    $.ajax({
-                        url: "/add?path=" + $("#yt-url").val(),
-                        success: function() {
-                            $("#yt-url").val("");
-                        }
-                    });
+                    $.get("/add?path=" + $("#yt-url").val());
                 });
+
+                $('#root').load('/dir');
             });
 
             function cmdClick(id) {
-                $.ajax({
-                    url: "/cmd/" + id,
-                });
+                $.get("/cmd/" + id);
             }
 
             function addClick(path) {
-                $.ajax({
-                    url: "/add?path=" + path,
-                });
+                $.get("/add?path=" + path);
             }
         </script>
     </head>
@@ -53,29 +46,14 @@
         <br>
 
         <div class="input-group mb-3">
-            <input id="yt-url" type="text class="form-control">
+            <input id="yt-url" type="text" class="form-control">
             <div class="input-group-append">
                 <button id="ytd" type="button" class ="btn btn-outline-secondary">Youtube</button>
             </div>
         </div>
 
-        <ul class="list-group">
-# for (cnt, base,full) in dirs:
-        <button class="list-group-item list-group-item-action list-group-item-primary" type="button" data-toggle="collapse", data-target="#dir{{ cnt }}">
-            <span class="oi oi-chevron-bottom"></span>{{ base }}
-        </button>
-        <div class="collapse" id="dir{{ cnt }}">
-            <div class="card card-body">
-                Contents of {{ full }}
-            </div>
-        </div>
-# endfor
-# for (cnt, base,full) in files:
-        <div class="list-group-item">
-            <button type="button" class="oi oi-media-play" onclick="addClick('{{ full }}')"></button>{{ base }}
-        </div>
-# endfor
-        </ul>
+        <!-- Directory contents are dynamically filled in this div -->
+        <div id="root"></div>
 
         <!-- Bootstrap CDN & dependency -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>

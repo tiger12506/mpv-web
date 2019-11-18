@@ -1,7 +1,7 @@
 import os
 import sys
 from flask import Flask
-from flask import request, redirect, url_for
+from flask import request, redirect, url_for, jsonify
 from jinja2 import Environment, PackageLoader, select_autoescape
 
 
@@ -16,6 +16,7 @@ env = Environment(
 
 )
 template = env.get_template('index.html')
+dir_template = env.get_template('dir.html')
 
 app = Flask(__name__)
 
@@ -25,20 +26,30 @@ def version():
 
 @app.route('/')
 def index():
+    (dirs, files) = list_dir(directory)
+    return template.render(dirs=dirs, files=files)
+
+@app.route('/dir', methods=['GET'])
+def get_dir():
+    d = request.args.get('path', "")
+    result = list_dir(d)
+    return dir_template.render(dirs=result[0], files=result[1])
+
+def list_dir(d=""):
+    if d == "": d = directory
     lis = []
     licnt = 0
     dirs = []
     dircnt = 0
-    for p in os.listdir(directory):
-        full = os.path.join(directory, p)
+    for p in sorted(os.listdir(d)):
+        full = os.path.join(d, p)
         if os.path.isdir(full):
             dirs.append((dircnt, p, full))
             dircnt += 1
         if os.path.isfile(full):
             lis.append((licnt, p, full))
             licnt += 1
-
-    return template.render(dirs=dirs, files=lis)
+    return (dirs, lis)
 
 @app.route('/add', methods=['GET'])
 def add():
