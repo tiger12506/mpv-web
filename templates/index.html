@@ -29,19 +29,23 @@
             function cmdClick(id) {
                 $.get("/cmd/" + id);
             }
-
-            function addClick(path) {
-                $.get("/add?path=" + path);
-            }
         </script>
     </head>
 
     <body>
-        <button id="pause" type="button" class="oi oi-media-pause" onclick="cmdClick('pause')"></button>
-        <button id="prev"  type="button" class="oi oi-media-step-backward" onclick="cmdClick('prev')"></button>
-        <button id="next"  type="button" class="oi oi-media-step-forward" onclick="cmdClick('next')"></button>
-        <button id="show"  type="button" class="oi oi-info" onclick="cmdClick('show')"></button>
-        <button id="clear" type="button" class="oi oi-ban" onclick="cmdClick('clear')"></button>
+        <button id="pause" type="button" class="btn btn-lg oi oi-media-pause" onclick="cmdClick('pause')"></button>
+        <button id="prev"  type="button" class="btn btn-lg oi oi-media-step-backward" onclick="cmdClick('prev')"></button>
+        <button id="seekdn"  type="button" class="btn btn-lg oi oi-media-skip-backward" onclick="cmdClick('seekdn')"></button>
+        <button id="seekup"  type="button" class="btn btn-lg oi oi-media-skip-forward" onclick="cmdClick('seekup')"></button>
+        <button id="next"  type="button" class="btn btn-lg oi oi-media-step-forward" onclick="cmdClick('next')"></button>
+        <button id="show"  type="button" class="btn btn-lg oi oi-info" onclick="cmdClick('show')"></button>
+        <button id="clear" type="button" class="btn btn-lg oi oi-trash" onclick="cmdClick('clear')"></button>
+        <br>
+        <button id="voldn" type="button" class="btn btn-lg oi oi-volume-low" onclick="cmdClick('voldn')"></button>
+        <button id="volup" type="button" class="btn btn-lg oi oi-volume-high" onclick="cmdClick('volup')"></button>
+        <button id="mute" type="button" class="btn btn-lg oi oi-volume-off" onclick="cmdClick('mute')"></button>
+        <button id="audio" type="button" class="btn btn-lg oi oi-headphones" onclick="cmdClick('audio')"></button>
+        <button id="subtitles" type="button" class="btn btn-lg oi oi-double-quote-serif-right" onclick="cmdClick('subtitles')"></button>
 
         <br>
 

@@ -3,6 +3,7 @@ import sys
 from flask import Flask
 from flask import request, redirect, url_for, jsonify
 from jinja2 import Environment, PackageLoader, select_autoescape
+import urllib
 
 
 directory = '/home/jacob/tv'
@@ -32,29 +33,27 @@ def index():
 @app.route('/dir', methods=['GET'])
 def get_dir():
     d = request.args.get('path', "")
+    d = urllib.unquote(d)
     result = list_dir(d)
     return dir_template.render(dirs=result[0], files=result[1])
 
 def list_dir(d=""):
     if d == "": d = directory
     lis = []
-    licnt = 0
     dirs = []
-    dircnt = 0
     for p in sorted(os.listdir(d)):
         full = os.path.join(d, p)
         if os.path.isdir(full):
-            dirs.append((dircnt, p, full))
-            dircnt += 1
+            dirs.append((hash(full), p, full))
         if os.path.isfile(full):
-            lis.append((licnt, p, full))
-            licnt += 1
+            lis.append((hash(full), p, full))
     return (dirs, lis)
 
 @app.route('/add', methods=['GET'])
 def add():
     p = request.args.get('path')
-    result = send('loadfile {} append-play'.format(p))
+    p = urllib.unquote(p)
+    result = send('loadfile "{}" append-play'.format(p))
     return result + index()
 
 cmd_map = { 'pause'     : 'cycle pause', \

@@ -1,22 +1,22 @@
 <ul class="list-group">
-# for (cnt, base,full) in dirs:
+# for (hash, base,full) in dirs:
         <script>
-            $('#dir{{ cnt }}').on('show.bs.collapse', function() {
-                $('#content{{ cnt }}').load("/dir?path="+encodeURI($('#full{{ cnt }}').html()));
+            $('#dir{{ hash }}').on('show.bs.collapse', function() {
+                $('#content{{ hash }}').load("/dir?path="+encodeURI($('#full{{ hash }}').html()));
             });
         </script>
 
-        <button class="list-group-item list-group-item-action list-group-item-primary" type="button" data-toggle="collapse", data-target="#dir{{ cnt }}">
+        <button class="list-group-item list-group-item-action list-group-item-primary" type="button" data-toggle="collapse", data-target="#dir{{ hash }}">
             <span class="oi oi-chevron-bottom"></span>{{ base }}
         </button>
-        <div class="collapse" id="dir{{ cnt }}">
-            <div id="full{{ cnt }}" class="d-none">{{ full }}</div>
-            <div id="content{{ cnt }}" class="card card-body"></div>
+        <div class="collapse" id="dir{{ hash }}">
+            <div id="full{{ hash }}" class="d-none">{{ full }}</div>
+            <div id="content{{ hash }}" class="card card-body"></div>
         </div>
 # endfor
-# for (cnt, base,full) in files:
+# for (hash, base,full) in files:
         <div class="list-group-item">
-            <button type="button" class="oi oi-media-play" onclick="addClick('{{ full }}')"></button>{{ base }}
+            <button type="button" class="oi oi-media-play" onclick='$.get("/add?path={{ full }}")'></button>{{ base }}
         </div>
 # endfor
 </ul>
