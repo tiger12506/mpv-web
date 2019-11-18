@@ -17,6 +17,10 @@
         <link href="/static/open-iconic/font/css/open-iconic-bootstrap.css" rel="stylesheet">
 
         <script>
+            function cmdClick(id) {
+                $.get("/cmd/" + id);
+            }
+
             $(document).ready(function() {
                 $("#ytd").on("click", function (event) {
                     event.preventDefault();
@@ -24,37 +28,77 @@
                 });
 
                 $('#root').load('/dir');
-            });
 
-            function cmdClick(id) {
-                $.get("/cmd/" + id);
-            }
+                document.addEventListener('keydown', event => {
+                    if ($('#yt-url').is(':focus')) return;
+                    event.preventDefault();
+                    switch (event.key) {
+                        case ' ':
+                            cmdClick('pause');
+                            break;
+                        case 'm':
+                            cmdClick('mute');
+                            break;
+                        case 'ArrowLeft':
+                            cmdClick('seekdn');
+                            break;
+                        case 'ArrowRight':
+                            cmdClick('seekup');
+                            break;
+                        case 'Escape':
+                            cmdClick('clear');
+                            break;
+                        case 'v':
+                            cmdClick('subtitles');
+                            break;
+                        case 'o':
+                            cmdClick('show');
+                            break;
+                        case 'a':
+                            cmdClick('audio');
+                            break;
+                        case '*':
+                            cmdClick('volup');
+                            break;
+                        case '/':
+                            cmdClick('voldn');
+                            break;
+                        case 'Enter':
+                        case '>':
+                            cmdClick('next');
+                            break;
+                        case '<':
+                            cmdClick('prev');
+                            break;
+                    }
+                });
+            });
         </script>
     </head>
 
     <body>
-        <button id="pause" type="button" class="btn btn-lg oi oi-media-pause" onclick="cmdClick('pause')"></button>
-        <button id="prev"  type="button" class="btn btn-lg oi oi-media-step-backward" onclick="cmdClick('prev')"></button>
-        <button id="seekdn"  type="button" class="btn btn-lg oi oi-media-skip-backward" onclick="cmdClick('seekdn')"></button>
-        <button id="seekup"  type="button" class="btn btn-lg oi oi-media-skip-forward" onclick="cmdClick('seekup')"></button>
-        <button id="next"  type="button" class="btn btn-lg oi oi-media-step-forward" onclick="cmdClick('next')"></button>
-        <button id="show"  type="button" class="btn btn-lg oi oi-info" onclick="cmdClick('show')"></button>
-        <button id="clear" type="button" class="btn btn-lg oi oi-trash" onclick="cmdClick('clear')"></button>
-        <br>
-        <button id="voldn" type="button" class="btn btn-lg oi oi-volume-low" onclick="cmdClick('voldn')"></button>
-        <button id="volup" type="button" class="btn btn-lg oi oi-volume-high" onclick="cmdClick('volup')"></button>
-        <button id="mute" type="button" class="btn btn-lg oi oi-volume-off" onclick="cmdClick('mute')"></button>
-        <button id="audio" type="button" class="btn btn-lg oi oi-headphones" onclick="cmdClick('audio')"></button>
-        <button id="subtitles" type="button" class="btn btn-lg oi oi-double-quote-serif-right" onclick="cmdClick('subtitles')"></button>
-
-        <br>
-
-        <div class="input-group mb-3">
-            <input id="yt-url" type="text" class="form-control">
-            <div class="input-group-append">
-                <button id="ytd" type="button" class ="btn btn-outline-secondary">Youtube</button>
+        <div class="bg-light sticky-top" background-color="white">
+            <button id="pause" type="button" class="btn btn-lg oi oi-media-pause" onclick="cmdClick('pause')"></button>
+            <button id="prev"  type="button" class="btn btn-lg oi oi-media-step-backward" onclick="cmdClick('prev')"></button>
+            <button id="seekdn"  type="button" class="btn btn-lg oi oi-media-skip-backward" onclick="cmdClick('seekdn')"></button>
+            <button id="seekup"  type="button" class="btn btn-lg oi oi-media-skip-forward" onclick="cmdClick('seekup')"></button>
+            <button id="next"  type="button" class="btn btn-lg oi oi-media-step-forward" onclick="cmdClick('next')"></button>
+            <button id="show"  type="button" class="btn btn-lg oi oi-info" onclick="cmdClick('show')"></button>
+            <button id="clear" type="button" class="btn btn-lg oi oi-trash" onclick="cmdClick('clear')"></button>
+            <br>
+            <button id="voldn" type="button" class="btn btn-lg oi oi-volume-low" onclick="cmdClick('voldn')"></button>
+            <button id="volup" type="button" class="btn btn-lg oi oi-volume-high" onclick="cmdClick('volup')"></button>
+            <button id="mute" type="button" class="btn btn-lg oi oi-volume-off" onclick="cmdClick('mute')"></button>
+            <button id="audio" type="button" class="btn btn-lg oi oi-headphones" onclick="cmdClick('audio')"></button>
+            <button id="subtitles" type="button" class="btn btn-lg oi oi-double-quote-serif-right" onclick="cmdClick('subtitles')"></button>
+            <br>
+            <div class="input-group mb-3">
+                <input id="yt-url" type="text" class="form-control">
+                <div class="input-group-append">
+                    <button id="ytd" type="button" class ="btn btn-outline-secondary">Youtube</button>
+                </div>
             </div>
-        </div>
+       </div>
 
         <!-- Directory contents are dynamically filled in this div -->
         <div id="root"></div>

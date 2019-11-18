@@ -22,7 +22,7 @@
         <div id="content{{ hash }}" class="card card-body d-none"></div>
 # endfor
 # for (hash, base, full) in files:
-        <div class="list-group-item">
+        <div>
             <button type="button" class="oi oi-media-play" onclick='$.get("/add?path={{ full }}")'></button>{{ base }}
         </div>
 # endfor
