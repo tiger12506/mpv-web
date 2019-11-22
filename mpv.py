@@ -3,8 +3,7 @@ import sys
 from flask import Flask
 from flask import request, redirect, url_for, jsonify
 from jinja2 import Environment, PackageLoader, select_autoescape
-import urllib
-
+import urllib.parse
 
 directory = '/home/jacob/tv'
 fifo_name = '/tmp/mpv'
@@ -33,7 +32,7 @@ def index():
 @app.route('/dir', methods=['GET'])
 def get_dir():
     d = request.args.get('path', "")
-    d = urllib.unquote(d)
+    d = urllib.parse.unquote(d)
     result = list_dir(d)
     return dir_template.render(dirs=result[0], files=result[1])
 
@@ -52,7 +51,7 @@ def list_dir(d=""):
 @app.route('/add', methods=['GET'])
 def add():
     p = request.args.get('path')
-    p = urllib.unquote(p)
+    p = urllib.parse.unquote(p)
     result = send('loadfile "{}" append-play'.format(p))
     return result + index()
 
