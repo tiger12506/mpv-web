@@ -62,8 +62,11 @@ cmd_map = { 'pause'     : 'cycle pause', \
             'volup'     : 'add volume 2', \
             'voldn'     : 'add volume -2', \
             'seekup'    : 'seek 5', \
+            'seekupfar' : 'seek 60', \
             'seekdn'    : 'seek -5', \
+            'seekdnfar' : 'seek -60', \
             'subtitles' : 'cycle sub-visibility', \
+            'osd'       : 'no-osd cycle-values osd-level 3 1', \
             'quit'      : 'quit', \
             'audio'     : 'cycle audio', \
             'loop'      : 'cycle-values loop-file "inf" "no"', \

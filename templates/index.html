@@ -24,16 +24,29 @@
             $(document).ready(function() {
                 $("#ytd").on("click", function (event) {
                     event.preventDefault();
+                    $(document).focus();
                     $.get("/add?path=" + $("#yt-url").val());
                 });
 
                 $('#root').load('/dir');
 
-                document.addEventListener('keydown', event => {
+                /* Prevent space, up, down from scrolling the document, because we use them to activate pause, seekupfar, seekdnfar respectively */
+                document.addEventListener('keydown', e => {
+                    if ($('#yt-url').is(':focus')) return;
+                    if (e.key == ' ' || e.key == 'ArrowUp' || e.key == 'ArrowDown') {
+                        e.preventDefault();
+                        return false;
+                    }
+                });
+
+                document.addEventListener('keyup', event => {
                     if ($('#yt-url').is(':focus')) return;
                     event.preventDefault();
                     switch (event.key) {
                         case ' ':
+                            /* Prevent space from activating the currently focused element */
+                            if (event.stopPropagation()) event.stopPropagation();
+
                             cmdClick('pause');
                             break;
                         case 'm':
@@ -45,6 +58,12 @@
                         case 'ArrowRight':
                             cmdClick('seekup');
                             break;
+                        case 'ArrowUp':
+                            cmdClick('seekupfar');
+                            break;
+                        case 'ArrowDown':
+                            cmdClick('seekdnfar');
+                            break;
                         case 'Escape':
                             cmdClick('clear');
                             break;
@@ -52,6 +71,9 @@
                             cmdClick('subtitles');
                             break;
                         case 'o':
+                            cmdClick('osd');
+                            break;
+                        case 'p':
                             cmdClick('show');
                             break;
                         case 'a':
@@ -71,6 +93,7 @@
                             cmdClick('prev');
                             break;
                     }
+                    return false;
                 });
             });
         </script>
@@ -80,17 +103,20 @@
         <div class="bg-light sticky-top" background-color="white">
             <button id="pause" type="button" class="btn btn-lg oi oi-media-pause" onclick="cmdClick('pause')"></button>
             <button id="prev"  type="button" class="btn btn-lg oi oi-media-step-backward" onclick="cmdClick('prev')"></button>
-            <button id="seekdn"  type="button" class="btn btn-lg oi oi-media-skip-backward" onclick="cmdClick('seekdn')"></button>
-            <button id="seekup"  type="button" class="btn btn-lg oi oi-media-skip-forward" onclick="cmdClick('seekup')"></button>
+            <button id="seekdnfar"  type="button" class="btn btn-lg oi oi-media-skip-backward" onclick="cmdClick('seekdnfar')"></button>
+            <button id="seekdn"  type="button" class="btn btn-lg oi oi-caret-left" onclick="cmdClick('seekdn')"></button>
+            <button id="seekup"  type="button" class="btn btn-lg oi oi-caret-right" onclick="cmdClick('seekup')"></button>
+            <button id="seekupfar"  type="button" class="btn btn-lg oi oi-media-skip-forward" onclick="cmdClick('seekupfar')"></button>
             <button id="next"  type="button" class="btn btn-lg oi oi-media-step-forward" onclick="cmdClick('next')"></button>
-            <button id="show"  type="button" class="btn btn-lg oi oi-info" onclick="cmdClick('show')"></button>
-            <button id="clear" type="button" class="btn btn-lg oi oi-trash" onclick="cmdClick('clear')"></button>
             <br>
             <button id="voldn" type="button" class="btn btn-lg oi oi-volume-low" onclick="cmdClick('voldn')"></button>
             <button id="volup" type="button" class="btn btn-lg oi oi-volume-high" onclick="cmdClick('volup')"></button>
             <button id="mute" type="button" class="btn btn-lg oi oi-volume-off" onclick="cmdClick('mute')"></button>
-            <button id="audio" type="button" class="btn btn-lg oi oi-headphones" onclick="cmdClick('audio')"></button>
-            <button id="subtitles" type="button" class="btn btn-lg oi oi-double-quote-serif-right" onclick="cmdClick('subtitles')"></button>
+            <button id="audio" type="button" class="btn btn-lg oi oi-comment-square" onclick="cmdClick('audio')"></button>
+            <button id="subtitles" type="button" class="btn btn-lg oi oi-copywriting" onclick="cmdClick('subtitles')"></button>
+            <button id="show"  type="button" class="btn btn-lg oi oi-book" onclick="cmdClick('show')"></button>
+            <button id="clear" type="button" class="btn btn-lg oi oi-eject" onclick="cmdClick('clear')"></button>
+            <button id="osd" type="button" class="btn btn-lg oi oi-question-mark" onclick="cmdClick('osd')"></button>
             <br>
             <div class="input-group mb-3">
                 <input id="yt-url" type="text" class="form-control">
